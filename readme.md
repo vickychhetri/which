@@ -7,7 +7,9 @@ This Go program searches for an executable file within the directories listed in
 ## Features
 - Searches for executable files with common Windows extensions: `.exe`, `.cmd`, `.bat`.
 - Traverses directories listed in the `PATH` environment variable.
-- Provides user-friendly messages when the executable is found or not.
+- Supports Unix/Linux executables without extensions.
+- Allows custom extensions to be specified via the `EXECUTABLE_EXTENSIONS` environment variable.
+- Includes a `-v` (verbose) flag for detailed output.
 
 ---
 
@@ -44,10 +46,24 @@ findexe.exe notepad
 ./findexe ls
 ```
 
+### Enable Verbose Output
+Use the `-v` flag to display detailed output during the search:
+```bash
+# Verbose output
+./findexe -v ls
+```
+
+### Add Custom Extensions
+You can specify additional file extensions to search for using the `EXECUTABLE_EXTENSIONS` environment variable:
+```bash
+export EXECUTABLE_EXTENSIONS=".sh,.py,.pl"
+./findexe script
+```
+
 ### Output
 - If the executable is found:
   ```
-  Found match! C:\Windows\System32\notepad.exe
+  Found match: C:\Windows\System32\notepad.exe
   ```
 - If the executable is not found:
   ```
@@ -59,7 +75,10 @@ findexe.exe notepad
 ## Code Overview
 
 ### Main Logic
-The program takes the executable name as an argument and iterates through all directories listed in the `PATH` environment variable. It appends common executable extensions (`.exe`, `.cmd`, `.bat`) to the provided name and checks if the file exists.
+The program takes the executable name as an argument and iterates through all directories listed in the `PATH` environment variable. It appends common executable extensions (`.exe`, `.cmd`, `.bat`) as well as user-defined extensions and checks if the file exists.
+
+### Verbose Mode
+The `-v` flag enables verbose output, showing each path being checked and the results of the checks.
 
 ### Helper Function
 `fileExists`: This utility function checks if a file exists and is not a directory:
@@ -73,9 +92,9 @@ func fileExists(filename string) bool {
 ---
 
 ## Improvements and Customization
-- Add support for Unix/Linux executables (no extensions).
-- Enhance error handling for invalid inputs.
-- Include support for additional file extensions if needed.
+- Add support for case-insensitive searches.
+- Improve performance by using concurrent checks for directories.
+- Provide colored output for better readability.
 
 ---
 
